@@ -26,6 +26,8 @@ const cameraSystem = {
 };
 
 const keyStates = {};
+const moveVector = new THREE.Vector3();
+const direction = new THREE.Vector3();
 
 // Debug visibility state
 let debugVisible = true;
@@ -337,29 +339,25 @@ function updateCinematicCamera(deltaTime) {
     } else if (cameraSystem.mode === 'manual') {
         // Manual mode: keyboard controls for fine-tuning
         const speedDelta = deltaTime * 300;
-        const moveVector = new THREE.Vector3();
+        moveVector.set(0, 0, 0);
 
         if (keyStates['KeyW']) {
-            const forward = new THREE.Vector3();
-            camera.getWorldDirection(forward);
-            moveVector.add(forward.multiplyScalar(speedDelta));
+            camera.getWorldDirection(direction);
+            moveVector.addScaledVector(direction, speedDelta);
         }
         if (keyStates['KeyS']) {
-            const forward = new THREE.Vector3();
-            camera.getWorldDirection(forward);
-            moveVector.add(forward.multiplyScalar(-speedDelta));
+            camera.getWorldDirection(direction);
+            moveVector.addScaledVector(direction, -speedDelta);
         }
         if (keyStates['KeyA']) {
-            const left = new THREE.Vector3();
-            camera.getWorldDirection(left);
-            left.cross(camera.up);
-            moveVector.add(left.multiplyScalar(-speedDelta));
+            camera.getWorldDirection(direction);
+            direction.cross(camera.up);
+            moveVector.addScaledVector(direction, -speedDelta);
         }
         if (keyStates['KeyD']) {
-            const right = new THREE.Vector3();
-            camera.getWorldDirection(right);
-            right.cross(camera.up);
-            moveVector.add(right.multiplyScalar(speedDelta));
+            camera.getWorldDirection(direction);
+            direction.cross(camera.up);
+            moveVector.addScaledVector(direction, speedDelta);
         }
         if (keyStates['Space']) {
             moveVector.y += speedDelta;
