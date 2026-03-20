@@ -9,7 +9,7 @@ export const ONLINE_DATA_BASE = 'https://storage.googleapis.com/fly-over-ghent/'
 const buildingMaterial = new THREE.MeshLambertMaterial({
     color: 0xffffff,
     flatShading: true,
-    side: THREE.BackSide,
+    side: THREE.DoubleSide,
     depthTest: true,
     depthWrite: true
 });
@@ -18,7 +18,7 @@ const buildingMaterial = new THREE.MeshLambertMaterial({
 const terrainMaterial = new THREE.MeshLambertMaterial({
     color: 0xffffff,
     flatShading: false,
-    side: THREE.BackSide,
+    side: THREE.DoubleSide,
     depthTest: true,
     depthWrite: true
 });
@@ -88,28 +88,17 @@ export function loadSTLTiles(scene, onProgress, onComplete, onError) {
 
     // Building STL files to load
     const buildingFiles = [
-        // dataPath + 'stl/ACAD-Geb_103000_192000_10_2_N_2013.stl',
-        // dataPath + 'stl/ACAD-Geb_103000_193000_10_2_N_2013.stl',
-        // dataPath + 'stl/ACAD-Geb_103000_194000_10_2_N_2013.stl',
-        // dataPath + 'stl/ACAD-Geb_104000_192000_10_2_N_2013.stl',
-        dataPath + 'stl/ACAD-Geb_104000_193000_10_2_N_2013.stl',
-        dataPath + 'stl/ACAD-Geb_104000_194000_10_2_N_2013.stl',
-        // dataPath + 'stl/ACAD-Geb_105000_192000_10_2_N_2013.stl',
-        dataPath + 'stl/ACAD-Geb_105000_193000_10_2_N_2013.stl',
-        dataPath + 'stl/ACAD-Geb_105000_194000_10_2_N_2013.stl'
+        dataPath + 'stl/Geb_104000_193000_10_2_N_2013.stl',
+        dataPath + 'stl/Geb_104000_194000_10_2_N_2013.stl',
+        dataPath + 'stl/Geb_105000_193000_10_2_N_2013.stl',
+        dataPath + 'stl/Geb_105000_194000_10_2_N_2013.stl'
     ];
 
-    // Terrain STL files to load
     const terrainFiles = [
-        // dataPath + 'stl/ACAD-Trn_103000_192000_10_0_N_2013.stl',
-        // dataPath + 'stl/ACAD-Trn_103000_193000_10_0_N_2013.stl',
-        // dataPath + 'stl/ACAD-Trn_103000_194000_10_0_N_2013.stl',
-        // dataPath + 'stl/ACAD-Trn_104000_192000_10_0_N_2013.stl',
-        dataPath + 'stl/ACAD-Trn_104000_193000_10_0_N_2013.stl',
-        dataPath + 'stl/ACAD-Trn_104000_194000_10_0_N_2013.stl',
-        // dataPath + 'stl/ACAD-Trn_105000_192000_10_0_N_2013.stl',
-        dataPath + 'stl/ACAD-Trn_105000_193000_10_0_N_2013.stl',
-        dataPath + 'stl/ACAD-Trn_105000_194000_10_0_N_2013.stl'
+        dataPath + 'stl/Trn_104000_193000_10_0_N_2013.stl',
+        dataPath + 'stl/Trn_104000_194000_10_0_N_2013.stl',
+        dataPath + 'stl/Trn_105000_193000_10_0_N_2013.stl',
+        dataPath + 'stl/Trn_105000_194000_10_0_N_2013.stl'
     ];
 
 
