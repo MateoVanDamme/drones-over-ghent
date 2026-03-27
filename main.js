@@ -161,7 +161,7 @@ function init() {
             toggleDebugInfo();
         } else if (event.code === 'KeyP') {
             if (boidManager) {
-                boidManager.respawnBoids();
+                boidManager.randomizeBoids();
             }
         }
     });
@@ -381,7 +381,7 @@ function animate() {
     const currentTime = Date.now();
     if (currentTime - lastRespawnTime >= AUTO_RESPAWN_INTERVAL) {
         if (boidManager) {
-            boidManager.respawnBoids();
+            boidManager.randomizeBoids();
             lastRespawnTime = currentTime;
         }
     }

@@ -85,22 +85,28 @@ export class Boid {
         // Clone the mesh
         this.mesh = boidMesh.clone();
 
-        // Initialize with random velocity
-        this.vel = new THREE.Vector3(
-            Math.random() - 0.5,
-            Math.random() - 0.5,
+        this.vel = new THREE.Vector3();
+        this.prevVel = new THREE.Vector3();
+        this.pos = new THREE.Vector3();
+        this.randomize();
+    }
+
+    // The droids are spawned rougly in the same direction 
+    randomize() {
+        this.vel.set(
+            0,
+            0,
             Math.random() - 0.5
         );
-
-        // Track previous velocity for banking calculation
-        this.prevVel = this.vel.clone();
-
-        // Start at random position above the floor, centered at (0, 0)
-        this.pos = new THREE.Vector3(
+        this.prevVel.copy(this.vel);
+        this.pos.set(
             (Math.random() - 0.5) * 200,
-            floorHeight + Math.random() * 100 + 50,
+            this.floorHeight - 10,
             (Math.random() - 0.5) * 200
         );
+        if (this.mesh) {
+            this.mesh.position.copy(this.pos);
+        }
     }
 
     createBoid() {
