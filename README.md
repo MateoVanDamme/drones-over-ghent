@@ -4,6 +4,12 @@ Autonomous drone flocking simulation over a 3D model of Ghent, using real city d
 
 **Live Demo:** https://flyover.mateovandamme.com/
 
+## Why
+
+In 2024, the city of Ghent began piloting police drones for crowd surveillance during events and protests. The same open 3D data that makes thise art projects possible — centimeter-accurate rooftops, extruded walls, terrain elevation — is the kind of infrastructure that enables autonomous navigation and tracking from above.
+
+These projects reclaim that perspective. Instead of surveilling, the drones flock like starlings. Instead of tracking, you fly freely. The city becomes a canvas rather than a control grid — same data, opposite intent.
+
 ## Features
 
 - **Boid Flocking System**: Autonomous flying drones using boid algorithms (separation, alignment, cohesion)

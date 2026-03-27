@@ -241,12 +241,15 @@ function setupGUI(boidConfig) {
 }
 
 function toggleDebugInfo() {
+    const overlay = document.getElementById('controls-overlay');
     if (debugVisible) {
         stats.dom.style.display = 'block';
         gui.domElement.style.display = 'block';
+        overlay.style.display = 'block';
     } else {
         stats.dom.style.display = 'none';
         gui.domElement.style.display = 'none';
+        overlay.style.display = 'none';
     }
 }
 
