@@ -116,55 +116,63 @@ export function loadSTLTiles(scene, onProgress, onComplete, onError) {
     const centerX = (maxX - minX) / 2 + 500;
     const centerY = (maxY - minY) / 2 + 500;
 
+        // Edge file paths for precomputed edges
+    const edgeFiles = [
+        ...buildingFiles.map(f => f.replace('Geb_', 'Edg_').replace('.stl', '.bin')),
+        ...terrainFiles.map(f => f.replace('Trn_', 'TrnEdg_').replace('.stl', '.bin'))
+    ];
+
+    const buildingEdgeMaterial = new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 1 });
+    const terrainEdgeMaterial = new THREE.LineBasicMaterial({ color: 0x999999, linewidth: 1 });
+
     // Load STL files
     const loader = new STLLoader();
     let loadedCount = 0;
     const totalTiles = tiles.length;
 
-    tiles.forEach(tile => {
+    tiles.forEach((tile, index) => {
         // Determine if this is a terrain or building file
         const isTerrain = tile.filename.includes('Trn_');
         const material = isTerrain ? terrainMaterial : buildingMaterial;
 
         loader.load(
             tile.filename,
-            (geometry) => {
-                // STL files exported from the new DXF workflow are already in meters
-                // No scaling needed (1:1)
-
+            async (geometry) => {
                 // Translate by Lambert-72 coordinates to maintain alignment
-                // Subtract tile coordinates to move geometry to relative position
                 geometry.translate(-tile.x, -tile.y, 0);
-
-                // Compute normals properly
                 geometry.computeVertexNormals();
-
-                // Compute bounding sphere for efficient frustum culling
                 geometry.computeBoundingSphere();
+
+                const group = new THREE.Group();
 
                 // Create mesh
                 const mesh = new THREE.Mesh(geometry, material);
+                group.add(mesh);
 
-                // Add edge highlighting - different thresholds and colors for terrain vs buildings
-                const edgeThreshold = isTerrain ? 1 : 10; // Lower threshold for terrain
-                const edgeColor = isTerrain ? 0x999999 : 0x000000; // Gray for terrain, black for buildings
-                const edges = new THREE.EdgesGeometry(geometry, edgeThreshold);
-                const lineMaterial = new THREE.LineBasicMaterial({ color: edgeColor, linewidth: 1 });
-                const edgeLines = new THREE.LineSegments(edges, lineMaterial);
-                mesh.add(edgeLines);
+                // Load precomputed edges
+                try {
+                    const response = await fetch(edgeFiles[index]);
+                    if (response.ok) {
+                        const buffer = await response.arrayBuffer();
+                        const positions = new Float32Array(buffer);
+                        const edgeGeometry = new THREE.BufferGeometry();
+                        edgeGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                        edgeGeometry.translate(-tile.x, -tile.y, 0);
+                        group.add(new THREE.LineSegments(edgeGeometry, isTerrain ? terrainEdgeMaterial : buildingEdgeMaterial));
+                    }
+                } catch (e) {
+                    // Edge file missing or failed to load — not critical
+                }
 
                 // Calculate relative position from origin based on filename coordinates
                 const relativeX = (tile.x - minX);
                 const relativeY = (tile.y - minY);
 
                 // Position the tile centered around (0, 0, 0) by subtracting center offset
-                // In Lambert-1972, Y increases northward, so we use -relativeY for Z
-                mesh.position.set(relativeX - centerX, 0, -(relativeY - centerY));
+                group.position.set(relativeX - centerX, 0, -(relativeY - centerY));
+                group.rotation.x = -Math.PI / 2;
 
-                // Rotate to align properly (STL is typically Z-up, Three.js is Y-up)
-                mesh.rotation.x = -Math.PI / 2;
-
-                scene.add(mesh);
+                scene.add(group);
 
                 loadedCount++;
 
